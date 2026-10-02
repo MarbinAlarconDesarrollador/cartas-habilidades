@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" id="meta-theme-color" content="#080b10">
+    <meta name="description"
+        content="Juego de cartas de superpoderes del equipo, estilo Super Trunfo, multijugador en lí­nea ví­a P2P.">
+    <title>SUPER STUM - Creando Soft</title>
+
+    <!-- PWA: manifiesto e iconos -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <!-- iOS no admite SVG aquÃ­: coloca un PNG de 192px en icons/icon-192.png -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SUPER STUM">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Tema antes del primer render: evita el destello de color al abrir la app.
+         Este fragmento va inline a propósito; el resto del JS está en js/app.js. -->
+    <script>
+        (function () {
+            var m = null;
+            try { m = localStorage.getItem("superstum-theme"); } catch (e) { }
+            if (m !== "light" && m !== "dark") {
+                m = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+            }
+            document.documentElement.setAttribute("data-theme", m);
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Estilos de la app (separados del HTML) -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="logo">
+            <div class="top-controls">
+                <button class="theme-toggle" id="btn-theme" type="button" aria-label="Cambiar modo de color" title="Cambiar modo claro/oscuro">
+                    <span id="theme-icon">☀</span>
+                    <span id="theme-label">Modo claro</span>
+                </button>
+                <button class="round-btn" id="btn-sound" type="button" aria-label="Activar o silenciar sonidos" title="Sonidos: activados/desactivados">ð</button>
+                <button class="round-btn" id="btn-help" type="button" aria-label="Cómo se juega" title="Cómo se juega">?</button>
+            </div>
+            <h1>SUPER STUM</h1>
+            <p id="app-subtitle">Creando Soft</p>
+        </div>
+
+        <!-- ===================== LOBBY ===================== -->
+        <section id="screen-lobby" class="screen active">
+            <div class="panel name-field">
+                <label for="input-name">Tu nombre</label>
+                <input type="text" id="input-name" class="name-input" placeholder="Tu nombre o apodo" maxlength="18">
+            </div>
+
+            <details class="panel respect-note">
+                <summary>🤝 Juego limpio: cómo se hicieron las cartas</summary>
+                <ul id="respect-list"></ul>
+            </details>
+
+            <div class="mode-row">
+                <div class="panel mode-card" id="btn-goto-host">
+                    <h3>🎮 Crear sala</h3>
+                    <p class="muted">Genera un código y compártelo con hasta 5 compañeros.</p>
+                </div>
+
+                <div class="divider">o</div>
+
+                <div class="panel mode-card join">
+                    <h3>🔗 Unirse a sala</h3>
+                    <p class="muted">Ingresa el código que te compartió el anfitrión.</p>
+                    <div class="stack" style="margin-top:12px;">
+                        <input type="text" id="input-join-code" placeholder="Código" maxlength="8">
+                        <button class="btn btn-accent btn-block" id="btn-join">Unirme a la partida</button>
+                    </div>
+                </div>
+                <div class="divider">o</div>
+
+                <div class="panel mode-card bot" id="btn-solo">
+                    <h3>🤖 Modo práctica</h3>
+                    <p class="muted">Juega solo contra 3 rivales virtuales. Ideal para aprender sin crear sala y sin conexión.</p>
+                </div>
+            </div>
+
+            <p class="muted center" style="margin-top:6px;">Para jugar con tus compañeros se necesita conexión a
+                internet. Hasta 6 jugadores por sala. El <b>modo práctica</b> funciona sin conexión.</p>
+        </section>
+
+        <!-- ===================== CÓMO JUGAR ===================== -->
+        <section id="screen-help" class="screen">
+            <div class="panel stack help-panel">
+                <h2 class="center">Cómo se juega</h2>
+                <p class="muted center">En 3 pasos. Menos de un minuto 🙌</p>
+
+                <ol class="help-steps">
+                    <li>
+                        <span class="step-num">1</span>
+                        <div>
+                            <b>Cada jugador recibe cartas del equipo</b>
+                            <p class="muted">Con foto, superpoder y 8 fortalezas. Todas las cartas valen lo mismo en
+                                total: nadie es «mejor», solo distinto.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-num">2</span>
+                        <div>
+                            <b>Cuando es tu turno, elige una fortaleza</b>
+                            <p class="muted">Mira tu carta de arriba y toca la fortaleza en la que confÍ­es, por ejemplo
+                                💡 Creatividad. Tienes 30 segundos.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-num">3</span>
+                        <div>
+                            <b>Gana el valor más alto</b>
+                            <p class="muted">El ganador se lleva todas las cartas de la ronda. En empate, solo los
+                                empatados vuelven a jugar. ¡Quien reúna todas las cartas gana!</p>
+                        </div>
+                    </li>
+                </ol>
+
+                <div class="help-tip">💡 ¿Primera vez? Prueba el <b>modo práctica</b> contra la máquina antes de jugar
+                    con el equipo.</div>
+
+                <button class="btn btn-primary btn-block" id="btn-help-ok">¡Entendido!</button>
+                <button class="btn btn-ghost btn-block" id="btn-help-solo">🤖 Ir al modo práctica</button>
+            </div>
+        </section>
+
+        <!-- ===================== SALA DE ESPERA / LOBBY ===================== -->
+        <section id="screen-waiting" class="screen">
+            <div class="panel stack lobby-panel">
+                <h3 id="waiting-title" class="center">Creando sala...</h3>
+                <div id="waiting-code-block" class="hidden">
+                    <p class="muted center">Comparte este código con tus compañeros:</p>
+                    <div class="code-display" id="host-code">------</div>
+                    <button class="btn btn-ghost btn-block" id="btn-copy-code" style="margin-top:10px;">📋 Copiar código</button>
+                    <button class="btn btn-ghost btn-block" id="btn-share-code" style="margin-top:8px;">📤 Compartir código</button>
+                </div>
+                <div class="spinner" id="waiting-spinner"></div>
+                <p class="muted center" id="waiting-status">Esperando conexión… </p>
+
+                <div class="player-roster" id="lobby-roster"></div>
+
+                <button class="btn btn-primary btn-block hidden" id="btn-start-game">▶ Iniciar partida</button>
+                <button class="btn btn-ghost btn-block" id="btn-cancel-wait">Cancelar</button>
+            </div>
+        </section>
+
+        <!-- ===================== JUEGO ===================== -->
+        <section id="screen-game" class="screen">
+            <div class="hud">
+                <div class="hud-left">
+                    <span class="pill room-pill"><span class="dot"></span> <b id="hud-room-code">—</b></span>
+                    <span class="pill">👥 <b id="hud-player-count">0</b></span>
+                    <span class="pill">Ronda <b id="hud-round">0</b></span>
+                </div>
+                <button class="btn-icon" id="btn-leave-game" title="Salir de la partida">✕</button>
+            </div>
+
+            <div class="hud">
+                <span class="pill">🃏 Mis cartas: <b id="hud-my-cards">0</b></span>
+                <div id="turn-banner" class="turn-banner">Repartiendo cartas…</div>
+            </div>
+            <div class="turn-timer hidden" id="turn-timer"><span id="turn-timer-fill"></span></div>
+            
+
+            <div class="arena">
+                <div class="opponents-strip" id="opponents-strip"></div>
+
+                <div class="main-duel">
+                    <div class="card-wrap">
+                        <div class="card" id="card-mine">
+                            <div class="card-media" id="media-mine">
+                                <div class="glyph-fallback">🂠</div>
+                            </div>
+                            <div class="card-top">
+                                <span class="el-tag">—</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-header">
+                                    <div class="card-name">—</div>
+                                    <div class="card-power" id="power-mine"></div>
+                                    <div class="card-quote" id="quote-mine"></div>
+                                </div>
+                                <div class="stats" id="stats-mine"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="turn-hint hidden" id="turn-hint">👇 Toca una fortaleza de tu carta para competir</div>
+                    <div class="pot-tag hidden" id="pot-tag"></div>
+                    <div class="log-box" id="log-box">La partida va a comenzar…</div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- ===================== FIN DE PARTIDA ===================== -->
+        <section id="screen-gameover" class="screen">
+            <div class="trophy" id="go-trophy">🏆</div>
+            <h2 id="go-title">—</h2>
+            <p class="muted" id="go-sub">—</p></p>
+            <div class="final-standings" id="final-standings"></div>
+            <div class="stack" style="width:100%; max-width:280px;">
+                <button class="btn btn-primary btn-block" id="btn-rematch">↻ Jugar otra vez</button>
+                <button class="btn btn-ghost btn-block" id="btn-back-lobby">Volver al inicio</button>
+            </div>
+        </section>
+
+        <footer class="game-footer">
+
+            <div class="footer-line">
+                © 2026 ◆ <strong>Marbin Alarcón</strong>
+            </div>
+
+            <div class="footer-line small" id="footer-version">
+                SUPER STUM • Creando Soft • v3.0.0
+            </div>
+
+            <div class="footer-line small">
+                Todos los derechos reservados.
+            </div>
+
+        </footer>
+
+
+    </div>
+    <canvas id="confetti"></canvas>
+    <div id="toast"></div>
+
+    <!-- Lógica de la app (separada del HTML). PeerJS se descarga bajo demanda
+         desde js/app.js al crear o unirse a una sala. -->
+    <script src="js/app.js" defer></script>
+</body>
+
+</html>

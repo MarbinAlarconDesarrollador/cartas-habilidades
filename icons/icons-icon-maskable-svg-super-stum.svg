@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SUPER STUM">
+  <!-- Icono maskable: contenido dentro de la zona segura (80% central),
+       para que el sistema recorte cÃ­rculo, cuadrado o squircle sin perder detalle. -->
+  <defs>
+    <linearGradient id="bgM" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17304a"/>
+      <stop offset=".55" stop-color="#0d4f91"/>
+      <stop offset="1" stop-color="#081521"/>
+    </linearGradient>
+    <linearGradient id="hexFillM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0c900"/>
+      <stop offset="1" stop-color="#d2b300"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bgM)"/>
+
+  <!-- hexÃ¡gono reducido a la zona segura -->
+  <polygon points="256,146 382,218.5 382,363.5 256,436 130,363.5 130,218.5"
+           fill="url(#hexFillM)" stroke="#0a0e13" stroke-width="8" stroke-linejoin="round"/>
+  <polygon points="256,170 361,230.5 361,351.5 256,412 151,351.5 151,230.5"
+           fill="none" stroke="#083766" stroke-width="6" stroke-linejoin="round" opacity=".9"/>
+
+  <text x="256" y="330" text-anchor="middle" fill="#083766"
+        font-family="'Rajdhani','Arial Black',Arial,sans-serif"
+        font-size="140" font-weight="700" letter-spacing="3">SS</text>
+
+  <path d="M256 197l8 16.5 18 2.5-13 12.5 3 18-16-8.5-16 8.5 3-18-13-12.5 18-2.5z"
+        fill="#081521" opacity=".85"/>
+</svg>

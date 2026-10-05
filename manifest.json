@@ -1,7 +1,7 @@
 {
     "name": "SUPER STUM • Cartas del Equipo",
     "short_name": "SUPER STUM",
-    "description": "Juego de cartas de superpoderes del equipo, estilo Super Trunfo, multijugador en lí­nea vía P2P y modo prÃ¡ctica sin conexiÃ³n.",
+    "description": "Juego de cartas de superpoderes del equipo, estilo Super Trunfo, multijugador en lí­nea vía P2P y modo práctica sin conexión.",
     "id": "super-stum",
     "start_url": "./index.html",
     "scope": "./",
@@ -11,19 +11,23 @@
     "theme_color": "#080b10",
     "lang": "es",
     "dir": "ltr",
-    "categories": ["games", "entertainment"],
+    "categories": [
+        "games",
+        "entertainment"
+    ],
     "icons": [
         {
-            "src": "icons/icon.svg",
-            "sizes": "any",
-            "type": "image/svg+xml",
+            "src": "icons/pwa-icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "icons/icon-maskable.svg",
-            "sizes": "any",
-            "type": "image/svg+xml",
-            "purpose": "maskable"
+            "src": "icons/pwa-icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
         }
     ]
 }
+

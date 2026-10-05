@@ -1797,7 +1797,7 @@ function renderReglas() {
   ul.innerHTML = "";
   items.forEach((t) => ul.appendChild(h("li", null, t)));
   $("app-subtitle").textContent = "Creando Soft · superpoderes";
-  $("footer-version").textContent = CONFIG.titulo + " · Creando Soft • v3.0.0";
+  $("footer-version").textContent = CONFIG.titulo + " · Creando Soft • v3.0.1";
 }
 
 /* ---------------------------------------------------------------------- */

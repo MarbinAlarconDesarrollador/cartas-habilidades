@@ -12,7 +12,7 @@
    Para publicar una nueva versiÃ³n: sube el nÃºmero de VERSION.
    ========================================================================= */
 
-const VERSION = "v2.1.0";
+const VERSION = "v3.0.1";
 const CACHE_NAME = "super-stum-" + VERSION;
 
 /* shell de la app: lo mÃ­nimo para abrir y jugar el modo prÃ¡ctica sin red */

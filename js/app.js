@@ -1,9 +1,9 @@
 /* =========================================================================
-           SUPER STUM â Edición Equipo (2 a 6 jugadores, P2P)
+           SUPER STUM -- Edición Equipo (2 a 6 jugadores, P2P)
 
            ARQUITECTURA DE RED: el anfitrión (host) es la única autoridad de la
-           partida y actúa como relÃ© en topologÃ­a estrella. Cada invitado se
-           conecta únicamente al host. El host envÃ­a a cada jugador SOLO lo que
+           partida y actúa como relé en topología estrella. Cada invitado se
+           conecta únicamente al host. El host envía a cada jugador SOLO lo que
            ese jugador puede ver (no se filtran las cartas de los demás).
            ========================================================================= */
 
@@ -12,7 +12,7 @@ const MIN_PLAYERS = 2;
 const CODE_PREFIX = "MA-";
 
 /* ---------------------------------------------------------------------- */
-/* CONFIGURACIÃN â edita aquí­ sin tocar el motor                          */
+/* CONFIGURACIÓN -- edita aquí­ sin tocar el motor                          */
 /* ---------------------------------------------------------------------- */
 const CONFIG = {
   titulo: "SUPER STUM",
@@ -786,7 +786,7 @@ async function startHostFlow() {
 function attemptCreatePeer(tries) {
   if (tries > 5) {
     $("waiting-status").textContent =
-      "No se pudo crear la sala. Revisa tu conexión e intÃ©ntalo de nuevo.";
+      "No se pudo crear la sala. Revisa tu conexión e inténtalo de nuevo.";
     $("waiting-spinner").classList.add("hidden");
     return;
   }
@@ -856,7 +856,7 @@ function attemptCreatePeer(tries) {
     c.on("error", () => hostHandleDisconnect(c.peer));
   });
 
-  // Si se pierde el contacto con el servidor de seÃ±alización, intenta reconectar
+  // Si se pierde el contacto con el servidor de señalización, intenta reconectar
   peer.on("disconnected", () => {
     try {
       if (peer && !peer.destroyed) peer.reconnect();
@@ -1073,7 +1073,7 @@ function hostHandleDisconnect(id) {
     finishGame();
   } else if (game.phase === "choosing") {
     if (game.turn === id) game.turn = nextActivePlayerId(id);
-    hostStartRound(); // recalcula quiÃ©n juega carta (y resuelve empates rotos)
+    hostStartRound(); // recalcula quién juega carta (y resuelve empates rotos)
     if (game.phase === "choosing") {
       const t = game.players.find((x) => x.id === game.turn);
       if (!t || t.eliminated || !t.current) {
@@ -1088,7 +1088,7 @@ function hostHandleDisconnect(id) {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Lógica de partida â el HOST es autoridad                               */
+/* Lógica de partida -- el HOST es autoridad                               */
 /* ---------------------------------------------------------------------- */
 function backToLobbyPhase(msg) {
   game.phase = "lobby";
@@ -1326,7 +1326,7 @@ function hostResolveChoice(stat) {
           ? preferred
           : nextActivePlayerId(preferred);
       hostStartRound();
-      // garantÃ­a: quien tiene el turno debe tener carta en mesa
+      // garantía: quien tiene el turno debe tener carta en mesa
       if (game.phase === "choosing") {
         const t = game.players.find((p) => p.id === game.turn);
         if (!t || !t.current) {
@@ -1358,7 +1358,7 @@ function chooseStat(stat) {
 }
 
 /* ---------------------------------------------------------------------- */
-/* MensajerÃ­a del invitado                                                */
+/* Mensajería del invitado                                                */
 /* ---------------------------------------------------------------------- */
 function handleGuestMessage(msg) {
   if (!msg || !msg.type) return;
@@ -1376,14 +1376,14 @@ function handleGuestMessage(msg) {
     toast(
       msg.reason === "full"
         ? "La sala está llena (máx. " + MAX_PLAYERS + ")"
-        : "La partida ya habÃ­a comenzado",
+        : "La partida ya había comenzado",
     );
     resetToLobby();
   }
 }
 
 /* ---------------------------------------------------------------------- */
-/* Render â sala de espera                                                */
+/* Render -- sala de espera                                                */
 /* ---------------------------------------------------------------------- */
 function renderLobby() {
   if (!game) return;
@@ -1391,7 +1391,7 @@ function renderLobby() {
   roster.innerHTML = "";
   if (!game.players.length) {
     roster.appendChild(
-      h("div", "roster-empty", "Nadie se ha unido todavÃ­aâ¦"),
+      h("div", "roster-empty", "Nadie se ha unido todavía…"),
     );
   }
   game.players.forEach((p) => {
@@ -1435,7 +1435,7 @@ function renderLobby() {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Render â partida                                                       */
+/* Render -- partida                                                       */
 /* ---------------------------------------------------------------------- */
 function renderGame() {
   if (!game) return;
@@ -1488,7 +1488,7 @@ function renderGame() {
     const turnPlayer = game.players.find((p) => p.id === game.turn);
     banner.textContent =
       turnPlayer && turnPlayer.isBot
-        ? "🤖 " + turnPlayer.name + " está pensando…"
+        ? "🤖" + turnPlayer.name + " está pensando…"
         : "⌛ Turno de " + (turnPlayer ? turnPlayer.name : "…") + "…";
     banner.classList.add("theirs");
   }
@@ -1827,7 +1827,7 @@ function resetToLobby() {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Identidad visual â modo claro / oscuro                               */
+/* Identidad visual -- modo claro / oscuro                               */
 /* ---------------------------------------------------------------------- */
 function applyTheme(theme, persist) {
   const root = document.documentElement;
@@ -2257,7 +2257,7 @@ $("btn-rematch").addEventListener("click", () => {
   } else {
     if (conn && conn.open) conn.send({ type: "rematchRequest" });
     $("go-sub").textContent =
-      "Esperando que el anfitrión inicie una nueva partidaâ¦";
+      "Esperando que el anfitrión inicie una nueva partida…";
   }
 });
 $("btn-back-lobby").addEventListener("click", () => {
@@ -2308,12 +2308,12 @@ if (/[?&]admin\b/.test(location.search)) {
       "\n" +
       (PROBLEMAS_EQUIPO.length
         ? PROBLEMAS_EQUIPO.join("\n")
-        : "Todas las cartas están balanceadas â"),
+        : "Todas las cartas están balanceadas ✅"),
   );
 }
 
 /* ---------------------------------------------------------------------- */
-/* PWA â registro del service worker                                     */
+/* PWA -- registro del service worker                                     */
 /* ---------------------------------------------------------------------- */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
